@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網頁程式設計表單</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            margin: 30px;
+            line-height: 1.6;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 280px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        .buttons {
+            margin-top: 25px;
+        }
+        button {
+            padding: 5px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <form>
+        <div class="form-section">
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname" value="Shang">
+        </div>
+
+        <div class="form-section">
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" name="lname" value="yu">
+        </div>
+
+        <div class="form-section">
+            <label for="sid">Student ID:</label>
+            <input type="text" id="sid" name="sid" value="113403513">
+        </div>
+
+        <div class="buttons">
+            <button type="submit">Submit</button>
+            <button type="reset">重設</button>
+        </div>
+    </form>
+
+</body>
+</html>
