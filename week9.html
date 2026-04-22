@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IM3029 - Exercise 23 (CSS-09)</title>
+    <title>IM3029 - 延伸資訊切換實作</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* 全域設定 */
-        * {
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { box-sizing: border-box; font-family: 'Roboto', sans-serif; }
 
         body {
             margin: 0;
@@ -21,17 +16,16 @@
             justify-content: center;
         }
 
-        /* 模擬瀏覽器視窗容器 */
         .container {
             width: 800px;
             background-color: #ffffff;
             border: 1px solid #ccc;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* 防止內容溢出 */
         }
 
-        /* Header 區域 - 背景 #f6f6f6 */
+        /* Header 區域 */
         header {
             height: 35px;
             background-color: #f6f6f6;
@@ -42,152 +36,126 @@
             border-bottom: 1px solid #eaeaea;
         }
 
-        .header-title {
-            font-size: 13px;
-            color: #2f2f2f;
-        }
-
-        /* 右上角關鍵按鈕 - h22/R8 */
-        .btn-info {
-            height: 22px; /* 標註要求：22px */
-            border-radius: 8px; /* 標註要求：R8 */
-            border: 1px solid #2f2f2f; /* 標註要求：outline 1px #2f2f2f */
-            background-color: #ffffff; /* 標註要求：#ffffff */
-            padding: 0 18px; /* 標註要求：左右 18px */
+        /* 修改後的按鈕：h22 / R8 / outline 1px */
+        .btn-toggle {
+            height: 22px;
+            border-radius: 8px;
+            border: 1px solid #2f2f2f;
+            background-color: #ffffff;
+            padding: 0 18px;
             color: #2f2f2f;
             font-size: 13px;
-            text-decoration: none;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
             transition: all 0.2s;
+            outline: none;
         }
 
-        .btn-info:hover {
-            background-color: #f0f0f0;
-        }
+        .btn-toggle:hover { background-color: #f0f0f0; }
+        .btn-toggle:active { background-color: #e0e0e0; }
 
-        /* 主要內容區域 */
-        main {
-            display: flex;
-            padding-top: 12px; /* 標註要求：上方 12 */
-        }
+        /* 主要內容佈局 */
+        main { display: flex; padding-top: 12px; position: relative; }
 
-        /* 左側列表 - 邊距 12px */
-        .sidebar {
-            flex: 1;
-            margin-left: 12px;
-        }
+        .sidebar { flex: 1; margin-left: 12px; }
 
-        .list-item {
-            display: flex;
-            align-items: center;
-            padding: 4px 8px;
-            margin-bottom: 1px; /* 分隔線模擬 */
-            background-color: #ffffff;
-            border-top: 1px solid #eaeaea;
-            border-bottom: 1px solid #eaeaea;
-            font-size: 13px;
-            color: #2f2f2f;
-        }
-
-        /* 選中狀態 - #e8f3ff / #cfddff */
-        .list-item.selected {
-            background-color: #e8f3ff;
-            border-top: 1px solid #cfddff;
-            border-bottom: 1px solid #cfddff;
-        }
-
-        .checkbox-mock {
-            width: 15px;
-            height: 15px;
-            border: 1px solid #ccc;
-            margin-right: 8px;
-            background-color: #fff;
-        }
-
-        /* 右側預覽區 - 寬度 496px */
-        .preview-pane {
-            width: 496px;
-            margin-left: 20px; /* 標註要求：間距 20 */
-            padding-right: 12px;
-        }
+        /* 右側預覽區 (496px) */
+        .preview-pane { width: 496px; margin-left: 20px; padding-right: 12px; }
 
         .main-image {
-            width: 450px; /* 標註要求：450x240 */
+            width: 450px;
             height: 240px;
             background-color: #ddd;
-            background-image: url('https://via.placeholder.com/450x240?text=Default+Preview');
+            background-image: url('https://via.placeholder.com/450x240?text=Main+Preview');
             background-size: cover;
             border: 1px solid #ccc;
         }
 
-        .details-box {
-            margin-top: 10px; /* 標註要求：間距 10 */
-            font-size: 13px;
-            color: #707070; /* 預覽內文字顏色 */
+        /* --- 關鍵修改：延伸資訊畫面 --- */
+        .extended-info {
+            max-height: 0; /* 預設高度為 0 */
+            overflow: hidden; /* 超出部分隱藏 */
+            transition: max-height 0.3s ease-out, padding 0.3s ease; /* 平滑過渡動畫 */
+            background-color: #f9f9f9;
+            border: 0px solid #cfddff;
+            margin-top: 0;
         }
 
-        .blue-text {
-            color: #0084ff; /* 變動數字藍色 */
-            font-weight: bold;
+        /* 當被啟動時的樣式 */
+        .extended-info.show {
+            max-height: 200px; /* 給予足夠顯示內容的高度 */
+            margin-top: 10px;
+            padding: 15px;
+            border-width: 1px;
+            border-left: 4px solid #0084ff; /* 加上側邊條增加辨識度 */
         }
 
-        /* 底部狀態列 - #f3f3f3 */
-        footer {
-            height: 30px;
-            background-color: #f3f3f3;
-            padding: 0 12px;
-            display: flex;
-            align-items: center;
-            font-size: 13px;
-            color: #2f2f2f;
-            border-top: 1px solid #eaeaea;
+        .info-title {
+            font-weight: 500;
+            color: #0084ff;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
+
+        .info-content {
+            font-size: 13px;
+            color: #707070;
+            line-height: 1.6;
+        }
+
+        /* 列表項目樣式 */
+        .list-item { padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .selected { background-color: #e8f3ff; border: 1px solid #cfddff; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <div class="header-title">檔案清單</div>
-            <a href="https://www.google.com/?hl=zh_TW" target="_blank" class="btn-info">
-                查看資訊
-            </a>
+            <div class="header-title" style="font-size: 13px;">IM3029 專案畫面</div>
+            <button class="btn-toggle" onclick="toggleInfo()">查看資訊</button>
         </header>
 
         <main>
             <div class="sidebar">
-                <div class="list-item">
-                    <div class="checkbox-mock"></div> 20171012_1.jpg
-                </div>
-                <div class="list-item selected">
-                    <div class="checkbox-mock" style="background-color: #0084ff;"></div> 20171012_2.jpg
-                </div>
-                <div class="list-item">
-                    <div class="checkbox-mock"></div> 20171012_3.jpg
-                </div>
-                <div class="list-item">
-                    <div class="checkbox-mock"></div> 20171012_4.jpg
-                </div>
-                <div style="font-size: 13px; margin-top: 15px;">數量：<span class="blue-text">64</span> / 100</div>
+                <div class="list-item selected">20171012_2.jpg</div>
+                <div class="list-item">20171012_3.jpg</div>
+                <div style="margin-top: 15px; font-size: 13px;">數量：<span style="color:#0084ff;">64</span></div>
             </div>
 
             <div class="preview-pane">
                 <div class="main-image"></div>
-                <div class="details-box">
-                    <p>修改日期：2017/10/12</p>
-                    <p>類型：JPG</p>
-                    <p>大小：466.97 KB</p>
+                
+                <div id="extendedInfoBox" class="extended-info">
+                    <div class="info-title">詳細屬性與描述</div>
+                    <div class="info-content">
+                        這是一段延伸資訊內容。根據設計標註，這裡可以用來展示圖片的 EXIF 資訊、上傳者註解或是更詳細的檔案系統路徑。此區塊使用了平滑的展開動畫。
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px; font-size: 13px; color: #707070;">
+                    修改日期：2017/10/12<br>類型：JPG
                 </div>
             </div>
         </main>
-
-        <footer>
-            狀態：就緒
-        </footer>
     </div>
 
+    <script>
+        function toggleInfo() {
+            const infoBox = document.getElementById('extendedInfoBox');
+            const btn = document.querySelector('.btn-toggle');
+            
+            // 切換 .show 類別
+            infoBox.classList.toggle('show');
+            
+            // 視情況修改按鈕文字
+            if (infoBox.classList.contains('show')) {
+                btn.innerText = '收起資訊';
+            } else {
+                btn.innerText = '查看資訊';
+            }
+        }
+    </script>
 </body>
 </html>
