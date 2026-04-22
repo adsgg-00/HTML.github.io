@@ -1,39 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Designer-Engineer Collaboration</title>
+    <title>Google 導向按鈕 - h22/R8 規範</title>
     <style>
-        /* The CSS is where the designer's specs come to life */
-        .custom-button {
-            /* Requested Specs */
+        /* 頁面基礎樣式 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            font-family: "Microsoft JhengHei", sans-serif;
+        }
+
+        /* 符合設計師規範的按鈕樣式 */
+        .google-link-btn {
+            /* 核心規範：高度 22px, 圓角 8px */
             height: 22px;
             border-radius: 8px;
 
-            /* Visual Styling (Standard designer-engineer defaults) */
+            /* 功能與視覺設定 */
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0 12px;
-            background-color: #007BFF;
+            padding: 0 15px;
+            background-color: #4285F4; /* Google 品牌藍 */
             color: white;
-            border: none;
+            text-decoration: none; /* 移除超連結下劃線 */
             font-size: 12px;
-            font-family: sans-serif;
+            font-weight: 500;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: none;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
-        .custom-button:hover {
-            background-color: #0056b3;
+        /* 滑鼠懸停效果 */
+        .google-link-btn:hover {
+            background-color: #357ae8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* 點擊效果 */
+        .google-link-btn:active {
+            background-color: #3367d6;
+            transform: translateY(1px);
         }
     </style>
 </head>
 <body>
 
-    <h3>H22 / R8 Button Example</h3>
-    <button class="custom-button">Click Me</button>
+    <a href="https://www.google.com/?hl=zh_TW" class="google-link-btn" target="_blank">
+        前往 Google
+    </a>
 
 </body>
 </html>
