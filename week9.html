@@ -3,58 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google 導向按鈕 - h22/R8 規範</title>
+    <title>IM3029 - Exercise 23 (CSS-09)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* 頁面基礎樣式 */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
-            font-family: "Microsoft JhengHei", sans-serif;
+        /* 全域設定 */
+        * {
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* 符合設計師規範的按鈕樣式 */
-        .google-link-btn {
-            /* 核心規範：高度 22px, 圓角 8px */
-            height: 22px;
-            border-radius: 8px;
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+        }
 
-            /* 功能與視覺設定 */
+        /* 模擬瀏覽器視窗容器 */
+        .container {
+            width: 800px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header 區域 - 背景 #f6f6f6 */
+        header {
+            height: 35px;
+            background-color: #f6f6f6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .header-title {
+            font-size: 13px;
+            color: #2f2f2f;
+        }
+
+        /* 右上角關鍵按鈕 - h22/R8 */
+        .btn-info {
+            height: 22px; /* 標註要求：22px */
+            border-radius: 8px; /* 標註要求：R8 */
+            border: 1px solid #2f2f2f; /* 標註要求：outline 1px #2f2f2f */
+            background-color: #ffffff; /* 標註要求：#ffffff */
+            padding: 0 18px; /* 標註要求：左右 18px */
+            color: #2f2f2f;
+            font-size: 13px;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0 15px;
-            background-color: #4285F4; /* Google 品牌藍 */
-            color: white;
-            text-decoration: none; /* 移除超連結下劃線 */
-            font-size: 12px;
-            font-weight: 500;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            border: none;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        /* 滑鼠懸停效果 */
-        .google-link-btn:hover {
-            background-color: #357ae8;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        .btn-info:hover {
+            background-color: #f0f0f0;
         }
 
-        /* 點擊效果 */
-        .google-link-btn:active {
-            background-color: #3367d6;
-            transform: translateY(1px);
+        /* 主要內容區域 */
+        main {
+            display: flex;
+            padding-top: 12px; /* 標註要求：上方 12 */
+        }
+
+        /* 左側列表 - 邊距 12px */
+        .sidebar {
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            margin-bottom: 1px; /* 分隔線模擬 */
+            background-color: #ffffff;
+            border-top: 1px solid #eaeaea;
+            border-bottom: 1px solid #eaeaea;
+            font-size: 13px;
+            color: #2f2f2f;
+        }
+
+        /* 選中狀態 - #e8f3ff / #cfddff */
+        .list-item.selected {
+            background-color: #e8f3ff;
+            border-top: 1px solid #cfddff;
+            border-bottom: 1px solid #cfddff;
+        }
+
+        .checkbox-mock {
+            width: 15px;
+            height: 15px;
+            border: 1px solid #ccc;
+            margin-right: 8px;
+            background-color: #fff;
+        }
+
+        /* 右側預覽區 - 寬度 496px */
+        .preview-pane {
+            width: 496px;
+            margin-left: 20px; /* 標註要求：間距 20 */
+            padding-right: 12px;
+        }
+
+        .main-image {
+            width: 450px; /* 標註要求：450x240 */
+            height: 240px;
+            background-color: #ddd;
+            background-image: url('https://via.placeholder.com/450x240?text=Default+Preview');
+            background-size: cover;
+            border: 1px solid #ccc;
+        }
+
+        .details-box {
+            margin-top: 10px; /* 標註要求：間距 10 */
+            font-size: 13px;
+            color: #707070; /* 預覽內文字顏色 */
+        }
+
+        .blue-text {
+            color: #0084ff; /* 變動數字藍色 */
+            font-weight: bold;
+        }
+
+        /* 底部狀態列 - #f3f3f3 */
+        footer {
+            height: 30px;
+            background-color: #f3f3f3;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #2f2f2f;
+            border-top: 1px solid #eaeaea;
         }
     </style>
 </head>
 <body>
 
-    <a href="https://www.google.com/?hl=zh_TW" class="google-link-btn" target="_blank">
-        前往 Google
-    </a>
+    <div class="container">
+        <header>
+            <div class="header-title">檔案清單</div>
+            <a href="https://www.google.com/?hl=zh_TW" target="_blank" class="btn-info">
+                查看資訊
+            </a>
+        </header>
+
+        <main>
+            <div class="sidebar">
+                <div class="list-item">
+                    <div class="checkbox-mock"></div> 20171012_1.jpg
+                </div>
+                <div class="list-item selected">
+                    <div class="checkbox-mock" style="background-color: #0084ff;"></div> 20171012_2.jpg
+                </div>
+                <div class="list-item">
+                    <div class="checkbox-mock"></div> 20171012_3.jpg
+                </div>
+                <div class="list-item">
+                    <div class="checkbox-mock"></div> 20171012_4.jpg
+                </div>
+                <div style="font-size: 13px; margin-top: 15px;">數量：<span class="blue-text">64</span> / 100</div>
+            </div>
+
+            <div class="preview-pane">
+                <div class="main-image"></div>
+                <div class="details-box">
+                    <p>修改日期：2017/10/12</p>
+                    <p>類型：JPG</p>
+                    <p>大小：466.97 KB</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            狀態：就緒
+        </footer>
+    </div>
 
 </body>
 </html>
