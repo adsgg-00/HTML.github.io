@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 圖片樣式練習 - IM專案</title>
+    <style>
+        /* 全域設定，確保間距計算正確 */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 50px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center; /* 水平置中 */
+            align-items: center;     /* 垂直置中（如果需要） */
+            gap: 20px;              /* 圖片間的間距 */
+        }
+
+        /* 為了讓 object-fit 效果更明顯，我設定了一個通用容器 */
+        .image-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 1. 左側圖片：圓角與不變形 --- */
+        .img-rounded-no-distort {
+            /* 要求：寬度 33% */
+            width: 33%;
+            
+            /* 為了呈現 object-fit 效果，我們需要設定一個高度 */
+            height: 300px; 
+            
+            /* 要求：圓角 18px */
+            border-radius: 18px;
+            
+            /* 要求：不變形 (No Distortion) */
+            /* 工程師重點：使用 cover，圖片會填滿區域並維持比例，超出部分會被裁切 */
+            object-fit: cover; 
+            
+            border: 1px solid #ccc; /* 加個淡淡的邊框增加視覺感 */
+        }
+
+        /* --- 2. 中間圖片：正圓形 --- */
+        .img-circle-no-distort {
+            /* 要求：尺寸 150px (寬和高都要) */
+            width: 150px;
+            height: 150px;
+            
+            /* 要求：圓形裁切 */
+            /* 工程師重點：設定 50% 即可達到正圓 */
+            border-radius: 50%;
+            
+            /* 要求：不變形 (No Distortion) */
+            /* 確保在圓框內圖片比例仍正確 */
+            object-fit: cover;
+            
+            border: 2px solid #555; /* 加個明顯的邊框 */
+        }
+
+        /* --- 3. 右側圖片：強制拉伸/變形 --- */
+        .img-distort {
+            /* 要求：寬度 33% */
+            width: 33%;
+            
+            /* 要求：高度 300px */
+            height: 300px;
+            
+            /* 要求：無圓角 */
+            border-radius: 0;
+            
+            /* 要求：變形 (Distortion) */
+            /* 工程師重點：使用 fill，圖片會無視原始比例，強制拉伸以填滿設定的寬高 */
+            object-fit: fill; 
+            
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="GettyImages-1542958495.webp" class="img-rounded-no-distort" alt="巴黎鐵塔 - 圓角不變形">
+
+    <img src="GettyImages-1542958495.webp" class="img-circle-no-distort" alt="巴黎鐵塔 - 圓形裁切">
+
+    <img src="GettyImages-1542958495.webp" class="img-distort" alt="巴黎鐵塔 - 強制變形">
+
+</body>
+</html>
