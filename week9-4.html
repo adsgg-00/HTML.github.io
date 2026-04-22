@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 練習</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    
+    <style>
+        /* 額外的微調：加上背景陰影與留白，讓畫面更接近你截圖中帶有白色卡片感的視覺效果 */
+        body {
+            background-color: #f8f9fa;
+            padding-top: 40px;
+        }
+        .custom-wrapper {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .element-spacing {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container custom-wrapper">
+        
+        <div class="jumbotron">
+            <h1>My First Bootstrap Page</h1>
+        </div>
+
+        <div class="form-group element-spacing">
+            <label>Input:</label>
+            <input type="text" class="form-control">
+        </div>
+
+        <div class="alert alert-success element-spacing">
+            Successful alert
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-default">Button</button>
+            
+            <span class="badge" style="margin-left: 5px;">badge</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
