@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>響應式佈局練習 - IM3029</title>
+    <style>
+        /* 基礎樣式與背景 */
+        body {
+            background-color: #5bb0ff; /* 圖片中的藍色背景 */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: sans-serif;
+        }
+
+        /* 白色容器卡片 */
+        .card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px; /* 限制最大寬度以便觀察 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* 內容間距設定 */
+        .box {
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* 1. 頂部綠色大方塊 */
+        .header-box {
+            height: 100px;
+            background-color: #b8d94f; /* 綠色 */
+            width: 100%;
+        }
+
+        /* 2. 中間青色方塊區域 (預設橫排) */
+        .middle-container {
+            display: flex;
+            gap: 10px;
+        }
+        .cyan-box {
+            flex: 1; /* 平分寬度 */
+            height: 80px;
+            background-color: #00bcd4; /* 青色 */
+        }
+
+        /* 3. 底部灰色小方塊區域 (預設橫排四格) */
+        .footer-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .gray-box {
+            flex: 1;
+            height: 40px;
+            background-color: #eeeeee; /* 淺灰色 */
+        }
+
+        /* --- 關鍵：Media Query 響應式設定 --- */
+        /* 當寬度小於 480px 時，執行以下樣式 (對應圖 a) */
+        @media screen and (max-width: 480px) {
+            
+            /* 中間青色方塊改為垂直排列 (Stack) */
+            .middle-container {
+                flex-direction: column;
+            }
+
+            /* 底部灰色方塊改為 2x2 網格 */
+            .footer-container {
+                flex-wrap: wrap; /* 允許換行 */
+            }
+            .gray-box {
+                flex: 0 0 calc(50% - 5px); /* 強制佔用 50% 寬度 (扣除 gap) */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header-box box"></div>
+
+        <div class="middle-container">
+            <div class="cyan-box box"></div>
+            <div class="cyan-box box"></div>
+            <div class="cyan-box box"></div>
+        </div>
+
+        <div class="footer-container">
+            <div class="gray-box box"></div>
+            <div class="gray-box box"></div>
+            <div class="gray-box box"></div>
+            <div class="gray-box box"></div>
+        </div>
+    </div>
+
+</body>
+</html>
