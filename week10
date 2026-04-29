@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Interaction</title>
+    <style>
+        /* 簡單的排版設定，盡量還原圖片中的樣式 */
+        .container {
+            border: 1px solid #999;
+            width: 180px;
+            padding: 20px;
+            text-align: center;
+            font-family: "Times New Roman", Times, serif; /* 圖片中的字體類似襯線體 */
+            margin: 20px;
+        }
+
+        #displayText {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: black; /* 預設文字顏色為黑色 */
+        }
+
+        button {
+            font-size: 16px;
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="displayText">Hello</div>
+        <button id="myButton">Button</button>
+    </div>
+
+    <script>
+        // 取得文字與按鈕的 HTML 元素
+        const textElement = document.getElementById('displayText');
+        const buttonElement = document.getElementById('myButton');
+
+        // 事件 1：滑鼠移入按鈕 (Mouse over button) -> 顏色變為洋紅色 (Magenta)
+        buttonElement.addEventListener('mouseover', () => {
+            textElement.style.color = 'magenta';
+        });
+
+        // 事件 2：滑鼠移出按鈕 -> 顏色恢復為黑色 (圖片雖未特別標示移出狀態，但這是正常的互動邏輯)
+        buttonElement.addEventListener('mouseout', () => {
+            // 如果文字已經被點擊改變，則不一定要變回黑色，但這裡設定滑出恢復原狀以符合重新操作的邏輯
+            textElement.style.color = 'black'; 
+        });
+
+        // 事件 3：滑鼠點擊按鈕 (Mouse click button) -> 文字變為 "Mouse Click"，顏色維持或變為洋紅色
+        buttonElement.addEventListener('click', () => {
+            textElement.textContent = 'Mouse Click';
+            textElement.style.color = 'magenta';
+        });
+    </script>
+
+</body>
+</html>
