@@ -242,8 +242,10 @@
             maxZoom: 12                  
         }).setView([23.8, 120.5], 7);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap'
+        // ★ 更新：將圖層改為混合衛星圖 (Satellite + Labels) 
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=zh-TW', {
+            attribution: '&copy; Google Maps',
+            maxZoom: 20
         }).addTo(map);
 
         var regions = [
@@ -302,11 +304,13 @@
         ];
 
         regions.forEach(function(reg) {
+            // ★ 更新：加上白邊，讓藍點在深色衛星圖上更清楚
             var marker = L.circleMarker(reg.pos, {
-                color: '#1a73e8',
-                fillColor: '#1a73e8',
-                fillOpacity: 0.6,
-                radius: 12
+                color: '#ffffff',     // 邊框顏色 (白色)
+                weight: 2,            // 邊框粗細
+                fillColor: '#1a73e8', // 填充顏色 (藍色)
+                fillOpacity: 0.8,
+                radius: 11
             }).addTo(map);
 
             marker.on('click', function(e) {
