@@ -24,14 +24,12 @@
             overflow: hidden;
         }
 
-        /* 3. KEE#B - 全螢幕地圖容器 */
         #map {
             height: 100%;
             width: 100%;
             z-index: 1;
         }
 
-        /* 1. 網頁標頭 - Google Maps 搜尋欄樣式 */
         .google-header {
             position: absolute;
             top: 12px;
@@ -59,7 +57,7 @@
         .sdg-badge {
             width: 32px;
             height: 32px;
-            background-color: #0a97d9; /* SDG 14 Color */
+            background-color: #0a97d9;
             color: white;
             font-size: 10px;
             display: flex;
@@ -70,7 +68,6 @@
             font-weight: bold;
         }
 
-        /* 2. 理念介紹區塊 - 摺疊式面板樣式 */
         .hero-section {
             padding: 0 16px 12px 16px;
             font-size: 13px;
@@ -79,7 +76,6 @@
             padding-top: 10px;
         }
 
-        /* 四季切換控制項 - 地圖右側浮動按鈕 */
         .season-controls {
             position: absolute;
             right: 12px;
@@ -107,11 +103,10 @@
             color: white;
         }
 
-        /* 4. 動態資訊展示區 - 側邊浮動卡片 */
         .info-card {
             position: absolute;
             left: 12px;
-            top: 160px; /* 位於標頭下方 */
+            top: 160px;
             z-index: 1000;
             width: 392px;
             background: white;
@@ -119,7 +114,7 @@
             box-shadow: var(--panel-shadow);
             max-height: calc(100% - 200px);
             overflow-y: auto;
-            display: none; /* 點擊後才顯示 */
+            display: none;
             animation: slideIn 0.3s ease-out;
         }
         @keyframes slideIn {
@@ -141,7 +136,6 @@
         
         .info-content { padding: 16px; }
         
-        /* 更新圖片容器樣式，讓照片可以滿版裁切 */
         .fish-img-box {
             width: 100%;
             height: 180px;
@@ -152,12 +146,12 @@
             align-items: center;
             justify-content: center;
             color: #70757a;
-            overflow: hidden; /* 隱藏溢出的照片部分 */
+            overflow: hidden;
         }
         .fish-img-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 保持比例填滿容器 */
+            object-fit: cover;
         }
 
         .eco-label {
@@ -179,7 +173,6 @@
             margin-bottom: 6px;
         }
 
-        /* 5. 頁尾區塊 - 仿 Google 地圖底部版權欄 */
         .mini-footer {
             position: absolute;
             bottom: 0;
@@ -213,7 +206,6 @@
         <button class="season-btn" onclick="updateSeason('冬')">冬</button>
     </div>
 
-    <!-- 資訊互動卡片，加上對應的 ID 以便 JS 操作 -->
     <div class="info-card" id="fishCard">
         <div class="info-card-header">
             <span style="font-size: 20px; font-weight: 500;" id="cardTitle">魚種名稱</span>
@@ -221,12 +213,10 @@
         </div>
         <div class="info-content">
             <div class="fish-img-box" id="cardImg">
-                <!-- 預設文字，照片載入後會被替換 -->
                 [照片載入中...]
             </div>
             <div class="eco-label" id="cardLabel">來源標籤</div>
             <ul class="eco-list" id="cardEcoList">
-                <!-- 生態清單會由 JS 動態生成 -->
             </ul>
         </div>
     </div>
@@ -237,21 +227,32 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // 初始化地圖，中心點設在台灣
         var map = L.map('map', {
-            zoomControl: false // 隱藏預設縮放鈕，維持乾淨 UI
-        }).setView([23.6, 121.0], 7);
+            zoomControl: false 
+        }).setView([23.8, 120.5], 7);
 
-        // 使用符合海洋風的淺色地圖圖層
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // 建立詳細的漁獲資料庫，包含照片路徑與生態指標
+        // ★ 更新：分出東、南、西、北四個海域的資料庫
         var regions = [
             { 
+                name: "北部海域 (基隆北海岸)", 
+                pos: [25.3, 121.7], // 北部座標
+                fish: "鎖管 (小卷)", // 補充的北部魚種
+                status: "供給正常",
+                imgSrc: "4.jpg",
+                label: "沿海捕撈",
+                ecoList: [
+                    "北部海域重要經濟漁獲。",
+                    "建議選擇棒受網等對環境衝擊較小的漁法。",
+                    "生長週期短，資源恢復力相對較佳。"
+                ]
+            },
+            { 
                 name: "西部海域 (嘉義外海)", 
-                pos: [23.45, 120.0], 
+                pos: [23.45, 120.0], // 西部座標
                 fish: "牡蠣 (蚵仔)", 
                 status: "供給正常",
                 imgSrc: "1.jpg",
@@ -264,7 +265,7 @@
             },
             { 
                 name: "南部海域 (台南高雄)", 
-                pos: [22.8, 120.1], 
+                pos: [22.6, 120.1], // 南部座標
                 fish: "虱目魚", 
                 status: "供給正常",
                 imgSrc: "2.jpg",
@@ -277,7 +278,7 @@
             },
             { 
                 name: "東部海域 (花東外海)", 
-                pos: [23.5, 121.8], 
+                pos: [23.5, 121.8], // 東部座標
                 fish: "鬼頭刀 (飛烏虎)", 
                 status: "供給正常",
                 imgSrc: "3.jpg",
@@ -290,7 +291,6 @@
             }
         ];
 
-        // 將資料標記到地圖上
         regions.forEach(function(reg) {
             var marker = L.circleMarker(reg.pos, {
                 color: '#1a73e8',
@@ -299,34 +299,29 @@
                 radius: 12
             }).addTo(map);
 
-            // 綁定點擊事件
-            marker.on('click', function() {
+            marker.on('click', function(e) {
                 showFishDetail(reg);
+                L.DomEvent.stopPropagation(e); // 防止點擊事件穿透到地圖觸發關閉卡片
             });
         });
 
-        // 點擊地圖標記時，更新左側卡片資訊的函式
         function showFishDetail(data) {
-            // 1. 替換標題與狀態
             document.getElementById('cardTitle').innerText = data.fish;
             document.getElementById('cardStatus').innerText = data.status;
             
-            // 2. 替換照片 (使用 HTML img 標籤載入對應檔案)
-            document.getElementById('cardImg').innerHTML = `<img src="${data.imgSrc}" alt="${data.fish}的照片">`;
+            // 載入對應照片 (1.jpg, 2.jpg, 3.jpg, 4.jpg)
+            document.getElementById('cardImg').innerHTML = `<img src="${data.imgSrc}" alt="${data.fish}的照片" onerror="this.parentElement.innerHTML='[找不到照片：${data.imgSrc}]'">`;
             
-            // 3. 替換標籤
             document.getElementById('cardLabel').innerText = data.label;
             
-            // 4. 動態生成生態清單 (先清空舊資料，再逐筆加入)
             const ecoListEl = document.getElementById('cardEcoList');
-            ecoListEl.innerHTML = ""; // 清空
+            ecoListEl.innerHTML = ""; 
             data.ecoList.forEach(function(item) {
                 let li = document.createElement("li");
                 li.innerText = item;
                 ecoListEl.appendChild(li);
             });
 
-            // 5. 根據狀態變更紅綠燈顏色
             const statusEl = document.getElementById('cardStatus');
             if(data.status === "短缺警示" || data.status === "需注意產量") {
                 statusEl.className = "fish-status status-warn";
@@ -334,11 +329,9 @@
                 statusEl.className = "fish-status status-normal";
             }
 
-            // 顯示卡片
             document.getElementById('fishCard').style.display = 'block';
         }
 
-        // 處理季節按鈕點擊狀態
         function updateSeason(season) {
             const btns = document.querySelectorAll('.season-btn');
             btns.forEach(b => {
@@ -348,7 +341,6 @@
             console.log("目前季節切換至：" + season);
         }
 
-        // 點擊地圖空白處隱藏資訊卡
         map.on('click', function() {
             document.getElementById('fishCard').style.display = 'none';
         });
