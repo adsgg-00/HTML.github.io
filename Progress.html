@@ -227,22 +227,32 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // 定義台灣及其周邊海域的邊界 (西南角座標, 東北角座標)
+        var taiwanBounds = L.latLngBounds(
+            [21.0, 118.5], 
+            [26.0, 122.5]  
+        );
+
+        // 初始化地圖，並加入邊界與縮放限制
         var map = L.map('map', {
-            zoomControl: false 
+            zoomControl: false,
+            maxBounds: taiwanBounds,     
+            maxBoundsViscosity: 1.0,     
+            minZoom: 7,                  
+            maxZoom: 12                  
         }).setView([23.8, 120.5], 7);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // ★ 更新：分出東、南、西、北四個海域的資料庫
         var regions = [
             { 
                 name: "北部海域 (基隆北海岸)", 
-                pos: [25.3, 121.7], // 北部座標
-                fish: "鎖管 (小卷)", // 補充的北部魚種
+                pos: [25.3, 121.7], 
+                fish: "鎖管 (小卷)", 
                 status: "供給正常",
-                imgSrc: "jpg.4.jpg",
+                imgSrc: "4.jpg",
                 label: "沿海捕撈",
                 ecoList: [
                     "北部海域重要經濟漁獲。",
@@ -252,10 +262,10 @@
             },
             { 
                 name: "西部海域 (嘉義外海)", 
-                pos: [23.45, 120.0], // 西部座標
+                pos: [23.45, 120.0], 
                 fish: "牡蠣 (蚵仔)", 
                 status: "供給正常",
-                imgSrc: "jpg.1.jpg",
+                imgSrc: "1.jpg",
                 label: "在地養殖",
                 ecoList: [
                     "濾食性雙殼貝類，無須人工飼料。",
@@ -265,10 +275,10 @@
             },
             { 
                 name: "南部海域 (台南高雄)", 
-                pos: [22.6, 120.1], // 南部座標
+                pos: [22.6, 120.1], 
                 fish: "虱目魚", 
                 status: "供給正常",
-                imgSrc: "jpg.2.jpg",
+                imgSrc: "2.jpg",
                 label: "在地養殖",
                 ecoList: [
                     "草食與雜食性，屬於食物鏈底層。",
@@ -278,10 +288,10 @@
             },
             { 
                 name: "東部海域 (花東外海)", 
-                pos: [23.5, 121.8], // 東部座標
+                pos: [23.5, 121.8], 
                 fish: "鬼頭刀 (飛烏虎)", 
                 status: "供給正常",
-                imgSrc: "jpg.3.png",
+                imgSrc: "3.jpg",
                 label: "野生捕撈",
                 ecoList: [
                     "生長極為快速，一年即可達成熟體型。",
@@ -301,7 +311,7 @@
 
             marker.on('click', function(e) {
                 showFishDetail(reg);
-                L.DomEvent.stopPropagation(e); // 防止點擊事件穿透到地圖觸發關閉卡片
+                L.DomEvent.stopPropagation(e); 
             });
         });
 
@@ -309,7 +319,6 @@
             document.getElementById('cardTitle').innerText = data.fish;
             document.getElementById('cardStatus').innerText = data.status;
             
-            // 載入對應照片 (1.jpg, 2.jpg, 3.jpg, 4.jpg)
             document.getElementById('cardImg').innerHTML = `<img src="${data.imgSrc}" alt="${data.fish}的照片" onerror="this.parentElement.innerHTML='[找不到照片：${data.imgSrc}]'">`;
             
             document.getElementById('cardLabel').innerText = data.label;
