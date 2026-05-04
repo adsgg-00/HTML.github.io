@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺灣海域漁獲動態視覺圖</title>
+    <style>
+        /* CSS 變數：海洋風色系 */
+        :root {
+            --primary-blue: #005b9f;
+            --secondary-blue: #0077be;
+            --light-blue: #e0f7fa;
+            --bg-color: #f4f9f9;
+            --text-dark: #333333;
+            --warning-red: #d9534f;
+            --safe-green: #5cb85c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, 'LiHei Pro', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 1. 網頁標頭 (Header) */
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .slogan {
+            font-size: 0.9rem;
+            background-color: var(--secondary-blue);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* 2. 理念介紹區塊 (Hero Section) */
+        .hero {
+            background-color: var(--light-blue);
+            padding: 30px 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .hero p {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #2c3e50;
+        }
+
+        /* 主要互動區塊 */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 四季切換控制項 */
+        .season-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .season-btn {
+            border: none;
+            background: transparent;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+        .season-btn.active, .season-btn:hover {
+            background-color: var(--secondary-blue);
+            color: white;
+        }
+
+        /* 3. 地圖互動區 (Map Area) */
+        .map-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            background-color: #d1ecf1;
+            border: 2px dashed var(--secondary-blue);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        /* 模擬地圖上的點擊區塊 */
+        .map-region {
+            position: absolute;
+            background-color: rgba(0, 119, 190, 0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .map-region:hover {
+            transform: scale(1.1);
+            background-color: rgba(0, 91, 159, 0.8);
+        }
+        /* 假定位置 */
+        #region-west { top: 40%; left: 20%; }
+        #region-east { top: 50%; right: 20%; }
+        #region-south { bottom: 20%; left: 40%; }
+
+        /* 4. 動態資訊展示區 (Info Panel) */
+        .info-panel {
+            display: none; /* 預設隱藏，點擊後顯示 */
+            position: absolute;
+            top: 100px;
+            right: 10%;
+            width: 320px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .info-header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-badge {
+            background-color: var(--safe-green);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .info-body {
+            padding: 15px;
+        }
+        .fish-img-placeholder {
+            width: 100%;
+            height: 150px;
+            background-color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .eco-list {
+            list-style-type: none;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .eco-list li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 8px;
+        }
+        .eco-list li::before {
+            content: "•";
+            color: var(--secondary-blue);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* 5. 頁尾區塊 (Footer) */
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 網頁標頭 -->
+    <header>
+        <div class="logo">臺灣海域漁獲動態視覺圖[span_1](start_span)[span_1](end_span)</div>
+        <div class="slogan">結合海洋保育及責任消費 | SDG 14 永續海洋與保育[span_2](start_span)[span_2](end_span)</div>
+    </header>
+
+    <!-- 2. 理念介紹區塊 -->
+    <section class="hero">
+        <p>在漁獲豐富的台灣，我們大家對海產的存在習以為常，但在氣候變遷快速，污染遍佈的今天，其實很多魚類正悄悄的消失[span_3](start_span)[span_3](end_span)。希望能透過此網頁來讓大家直觀了解當下哪些魚類適合實用，哪些魚類需要我們保護和控制[span_4](start_span)[span_4](end_span)。</p>
+    </section>
+
+    <!-- 主內容區 -->
+    <main>
+        <!-- 四季切換功能 -->
+        <div class="season-controls">
+            <button class="season-btn active" onclick="changeSeason('spring', this)">春季</button>
+            <button class="season-btn" onclick="changeSeason('summer', this)">夏季</button>
+            <button class="season-btn" onclick="changeSeason('autumn', this)">秋季</button>
+            <button class="season-btn" onclick="changeSeason('winter', this)">冬季</button>
+        </div>
+
+        <!-- 3. 地圖區塊 -->
+        <div class="map-container">
+            <p style="color: #666;">(此處未來可置入真實臺灣地圖圖檔或 SVG)</p>
+            <!-- 互動點擊區塊 -->
+            <div class="map-region" id="region-west" onclick="showInfoCard('west')">西部海域</div>
+            <div class="map-region" id="region-east" onclick="showInfoCard('east')">東部海域</div>
+            <div class="map-region" id="region-south" onclick="showInfoCard('south')">南部海域</div>
+        </div>
+
+        <!-- 4. 動態資訊展示區 (資訊互動卡片) -->
+        <aside class="info-panel" id="infoPanel">
+            <div class="info-header">
+                <h3 id="fishName">台灣蜆[span_5](start_span)[span_5](end_span)</h3>
+                <span class="status-badge" id="fishStatus">供給正常</span>
+            </div>
+            <div class="info-body">
+                <div class="fish-img-placeholder">
+                    <span>[在此放入水產圖片]</span>
+                </div>
+                <span class="tag">本地養殖[span_6](start_span)[span_6](end_span)</span>
+                <ul class="eco-list">
+                    <li>屬於食物鏈的中、底層生物，因體型小、數量多，生活史短、族群數量恢復快[span_7](start_span)[span_7](end_span)</li>
+                    <li>餌料來自天然或屬於植物性[span_8](start_span)[span_8](end_span)</li>
+                    <li>在地海鮮，碳足跡較低[span_9](start_span)[span_9](end_span)</li>
+                </ul>
+            </div>
+        </aside>
+    </main>
+
+    <!-- 5. 頁尾區塊 -->
+    <footer>
+        <p>開發團隊：第二十組 商逢育 李庭宇 吳絃竑[span_10](start_span)[span_10](end_span)</p>
+        <p>資料來源：臺灣海鮮選擇指南、臺灣魚類資料庫、海洋委員會海洋保育署、政府資料開放平臺-漁產品交易行情[span_11](start_span)[span_11](end_span)</p>
+    </footer>
+
+    <!-- JavaScript 互動邏輯 -->
+    <script>
+        // 處理四季按鈕切換的 UI 狀態
+        function changeSeason(season, btnElement) {
+            // 移除所有按鈕的 active 狀態
+            const buttons = document.querySelectorAll('.season-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // 為點擊的按鈕加上 active 狀態
+            btnElement.classList.add('active');
+            
+            // 這裡可以加入未來抽換地圖資料的邏輯
+            console.log("目前切換至：" + season);
+        }
+
+        // 處理地圖區塊點擊，顯示資訊卡片
+        function showInfoCard(region) {
+            const panel = document.getElementById('infoPanel');
+            panel.style.display = 'block'; // 顯示卡片
+            
+            // 未來這裡可以透過 API (例如你擅長的 Python 爬蟲或開放資料) 
+            // 根據點擊的 region (如 west) 替換卡片內的 DOM 內容
+            console.log("正在顯示海域資訊：" + region);
+        }
+    </script>
+</body>
+</html>
