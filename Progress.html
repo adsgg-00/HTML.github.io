@@ -140,6 +140,8 @@
         .status-warn { background: #fce8e6; color: #d93025; }
         
         .info-content { padding: 16px; }
+        
+        /* 更新圖片容器樣式，讓照片可以滿版裁切 */
         .fish-img-box {
             width: 100%;
             height: 180px;
@@ -150,7 +152,14 @@
             align-items: center;
             justify-content: center;
             color: #70757a;
+            overflow: hidden; /* 隱藏溢出的照片部分 */
         }
+        .fish-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持比例填滿容器 */
+        }
+
         .eco-label {
             display: inline-block;
             background: #f1f3f4;
@@ -158,11 +167,16 @@
             border-radius: 16px;
             font-size: 12px;
             margin-bottom: 12px;
+            color: var(--ocean-dark);
+            font-weight: bold;
         }
         .eco-list {
             margin: 0; padding-left: 20px;
             font-size: 14px; line-height: 1.6;
             color: var(--text-main);
+        }
+        .eco-list li {
+            margin-bottom: 6px;
         }
 
         /* 5. 頁尾區塊 - 仿 Google 地圖底部版權欄 */
@@ -199,20 +213,20 @@
         <button class="season-btn" onclick="updateSeason('冬')">冬</button>
     </div>
 
+    <!-- 資訊互動卡片，加上對應的 ID 以便 JS 操作 -->
     <div class="info-card" id="fishCard">
         <div class="info-card-header">
-            <span style="font-size: 20px; font-weight: 500;" id="cardTitle">台灣蜆</span>
-            <span class="fish-status status-normal" id="cardStatus">供給正常</span>
+            <span style="font-size: 20px; font-weight: 500;" id="cardTitle">魚種名稱</span>
+            <span class="fish-status status-normal" id="cardStatus">供給狀態</span>
         </div>
         <div class="info-content">
             <div class="fish-img-box" id="cardImg">
+                <!-- 預設文字，照片載入後會被替換 -->
                 [照片載入中...]
             </div>
-            <div class="eco-label">本地養殖</div>
-            <ul class="eco-list">
-                <li>屬於食物鏈中、底層生物，恢復力快。</li>
-                <li>餌料來自天然植物性，低負擔。</li>
-                <li>在地生產，碳足跡較低。</li>
+            <div class="eco-label" id="cardLabel">來源標籤</div>
+            <ul class="eco-list" id="cardEcoList">
+                <!-- 生態清單會由 JS 動態生成 -->
             </ul>
         </div>
     </div>
@@ -228,58 +242,113 @@
             zoomControl: false // 隱藏預設縮放鈕，維持乾淨 UI
         }).setView([23.6, 121.0], 7);
 
-        // 使用符合海洋風的淺色地圖圖層 (仿 Google 地圖樣式)
+        // 使用符合海洋風的淺色地圖圖層
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // 自定義地圖點擊區域（範例：座標點）
+        // 建立詳細的漁獲資料庫，包含照片路徑與生態指標
         var regions = [
-            { name: "西部海域", pos: [24.0, 120.0], fish: "台灣蜆", status: "供給正常" },
-            { name: "東部海域", pos: [24.0, 122.0], fish: "鬼頭刀", status: "供給正常" },
-            { name: "南部海域", pos: [22.0, 120.5], fish: "櫻花蝦", status: "短缺警示" }
+            { 
+                name: "西部海域 (嘉義外海)", 
+                pos: [23.45, 120.0], 
+                fish: "牡蠣 (蚵仔)", 
+                status: "供給正常",
+                imgSrc: "1.jpg",
+                label: "在地養殖",
+                ecoList: [
+                    "濾食性雙殼貝類，無須人工飼料。",
+                    "能淨化水質，對海洋環境友善。",
+                    "在地生產，碳足跡極低。"
+                ]
+            },
+            { 
+                name: "南部海域 (台南高雄)", 
+                pos: [22.8, 120.1], 
+                fish: "虱目魚", 
+                status: "供給正常",
+                imgSrc: "2.jpg",
+                label: "在地養殖",
+                ecoList: [
+                    "草食與雜食性，屬於食物鏈底層。",
+                    "轉換飼料效率高，資源消耗少。",
+                    "養殖技術成熟，族群數量穩定。"
+                ]
+            },
+            { 
+                name: "東部海域 (花東外海)", 
+                pos: [23.5, 121.8], 
+                fish: "鬼頭刀 (飛烏虎)", 
+                status: "供給正常",
+                imgSrc: "3.jpg",
+                label: "野生捕撈",
+                ecoList: [
+                    "生長極為快速，一年即可達成熟體型。",
+                    "族群恢復力強，適合替代大型鮪魚。",
+                    "建議選擇「一支釣」等友善漁法來源。"
+                ]
+            }
         ];
 
+        // 將資料標記到地圖上
         regions.forEach(function(reg) {
             var marker = L.circleMarker(reg.pos, {
                 color: '#1a73e8',
                 fillColor: '#1a73e8',
                 fillOpacity: 0.6,
-                radius: 10
+                radius: 12
             }).addTo(map);
 
+            // 綁定點擊事件
             marker.on('click', function() {
                 showFishDetail(reg);
             });
         });
 
+        // 點擊地圖標記時，更新左側卡片資訊的函式
         function showFishDetail(data) {
+            // 1. 替換標題與狀態
             document.getElementById('cardTitle').innerText = data.fish;
             document.getElementById('cardStatus').innerText = data.status;
             
-            // 變更狀態顏色
+            // 2. 替換照片 (使用 HTML img 標籤載入對應檔案)
+            document.getElementById('cardImg').innerHTML = `<img src="${data.imgSrc}" alt="${data.fish}的照片">`;
+            
+            // 3. 替換標籤
+            document.getElementById('cardLabel').innerText = data.label;
+            
+            // 4. 動態生成生態清單 (先清空舊資料，再逐筆加入)
+            const ecoListEl = document.getElementById('cardEcoList');
+            ecoListEl.innerHTML = ""; // 清空
+            data.ecoList.forEach(function(item) {
+                let li = document.createElement("li");
+                li.innerText = item;
+                ecoListEl.appendChild(li);
+            });
+
+            // 5. 根據狀態變更紅綠燈顏色
             const statusEl = document.getElementById('cardStatus');
-            if(data.status === "短缺警示") {
+            if(data.status === "短缺警示" || data.status === "需注意產量") {
                 statusEl.className = "fish-status status-warn";
             } else {
                 statusEl.className = "fish-status status-normal";
             }
 
+            // 顯示卡片
             document.getElementById('fishCard').style.display = 'block';
         }
 
+        // 處理季節按鈕點擊狀態
         function updateSeason(season) {
-            // 更新按鈕樣式
             const btns = document.querySelectorAll('.season-btn');
             btns.forEach(b => {
                 if(b.innerText === season) b.classList.add('active');
                 else b.classList.remove('active');
             });
             console.log("目前季節切換至：" + season);
-            // 這裡未來可以加入 logic 根據季節改變地圖上的漁獲點
         }
 
-        // 點擊地圖其他地方隱藏資訊卡
+        // 點擊地圖空白處隱藏資訊卡
         map.on('click', function() {
             document.getElementById('fishCard').style.display = 'none';
         });
