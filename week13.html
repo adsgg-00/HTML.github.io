@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 物件屬性操作展示</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 40px 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 18px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-top: 25px;
+        }
+        ul {
+            background-color: #f8f9fa;
+            padding: 15px 15px 15px 35px;
+            border-radius: 6px;
+            list-style-type: square;
+        }
+        li {
+            font-size: 16px;
+            color: #2980b9;
+            line-height: 1.6;
+        }
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 15px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>JavaScript 物件操作作業展示</h1>
+    
+    <h2>1. 原始物件的所有屬性 (Properties)</h2>
+    <ul id="properties-list"></ul>
+
+    <h2>2. 刪除 'age' 屬性後的物件內容</h2>
+    <pre id="object-output"></pre>
+</div>
+
+<script>
+    // 題目提供的範例物件
+    var Person = {
+        firstName : "Tony",
+        lastName : "Lee",
+        age : 50,
+        eyeColor : "Blue"
+    };
+
+    // 【步驟一】取得並列出所有屬性 (Keys)
+    var properties = Object.keys(Person);
+    var listElement = document.getElementById('properties-list');
+    
+    properties.forEach(function(prop) {
+        var li = document.createElement('li');
+        li.textContent = prop;
+        listElement.appendChild(li);
+    });
+
+    // 【步驟二】刪除 age 屬性
+    delete Person.age;
+
+    // 【步驟三】將刪除後的物件印在網頁畫面上
+    var outputElement = document.getElementById('object-output');
+    outputElement.textContent = JSON.stringify(Person, null, 2);
+</script>
+
+</body>
+</html>
